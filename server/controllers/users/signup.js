@@ -18,8 +18,10 @@ module.exports = async (req, res) => {
     where: { userid: req.body.userid },
   });
 
-  if (exEmail) res.status(403).send({ message: "이미 사용중인 이메일임" });
-  if (exUserid) res.status(403).send({ message: "이미 사용중인 아이디여요" });
+  if (exEmail)
+    return res.status(403).send({ message: "이미 사용중인 이메일임" });
+  if (exUserid)
+    return res.status(403).send({ message: "이미 사용중인 아이디여요" });
 
   await User.create({
     email: req.body.email,

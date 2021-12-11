@@ -7,7 +7,7 @@ module.exports = async (req, res) => {
   });
 
   if (!userInfo)
-    res.status(404).send({ message: "너 피방 옆자리 탈퇴시키는 거지?" });
+    return res.status(404).send({ message: "너 피방 옆자리 탈퇴시키는 거지?" });
 
   const deleteAccount = await User.destroy({
     where: { email: userInfo.email, password: userInfo.password },

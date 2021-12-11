@@ -16,5 +16,5 @@ module.exports = async (req, res) => {
   });
 
   if (!userInfo) res.status(400).send({ message: "이건 무슨 오류냐" });
-  res.status(200).send({ data: { userInfo } });
+  res.status(200).send({ userInfo });
 };

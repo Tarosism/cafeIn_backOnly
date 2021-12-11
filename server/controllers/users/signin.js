@@ -7,7 +7,7 @@ module.exports = async (req, res) => {
   });
 
   if (!userInfo)
-    res.status(404).send({ message: "아이디나 비밀번호를 확인해요" });
+    return res.status(404).send({ message: "아이디나 비밀번호를 확인해요" });
   else {
     const token = generateAccessToken(userInfo);
     sendAccessToken(res, token);

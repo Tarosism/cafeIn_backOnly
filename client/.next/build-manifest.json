@@ -30,15 +30,10 @@
       "static/chunks/main.js",
       "static/chunks/pages/_error.js"
     ],
-    "/signin": [
+    "/cafeInfo/[id]": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
-      "static/chunks/pages/signin.js"
-    ],
-    "/userinfo": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/userinfo.js"
+      "static/chunks/pages/cafeInfo/[id].js"
     ]
   },
   "ampFirstPages": []

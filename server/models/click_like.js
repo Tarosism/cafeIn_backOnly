@@ -1,31 +1,27 @@
 const Sequelize = require("sequelize");
 
-module.exports = class user extends Sequelize.Model {
+module.exports = class click_like extends Sequelize.Model {
   static init(sequelize) {
     return super.init(
       {
-        user_email: {
-          type: Sequelize.STRING(100),
+        post_id: {
+          type: Sequelize.INTEGER,
           allowNull: false,
         },
-        password: {
-          type: Sequelize.STRING(100),
+        user_id: {
+          type: Sequelize.INTEGER,
           allowNull: false,
         },
-        nickname: {
-          type: Sequelize.STRING(100),
+        like_id: {
+          type: Sequelize.INTEGER,
           allowNull: false,
-        },
-        profile_img: {
-          type: Sequelize.STRING(255),
-          allowNull: true,
         },
       },
       {
         sequelize,
         timestamps: false,
-        modelName: "user",
-        tableName: "users",
+        modelName: "click_like",
+        tableName: "click_likes",
         paranoid: false,
         charset: "utf8mb4",
         collate: "utf8mb4_general_ci",

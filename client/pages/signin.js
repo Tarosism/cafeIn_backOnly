@@ -39,7 +39,7 @@ export default function signin() {
             withCredentials: true,
           })
           .then((res) => {
-            dispatch(loginAction(res.data.userInfo));
+            dispatch(loginAction(res.data));
             Router.push("/"); //리다이렉트
           });
       })

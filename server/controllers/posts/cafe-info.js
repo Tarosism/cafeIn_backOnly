@@ -2,7 +2,7 @@ const { post, click_hashtag, hash_tag } = require("../../models");
 const { isAccessToken } = require("../modules/jwt");
 
 module.exports = async (req, res) => {
-  const { postid } = req.params;
+  const { postid, userid } = req.params;
 
   const selectedPost = await post.findOne({
     where: { id: postid },
@@ -38,7 +38,11 @@ module.exports = async (req, res) => {
     .filter((fill) => fill.type === "negative")
     .sort((a, b) => b.counts - a.counts);
 
-  return res
-    .status(200)
-    .send({ data: { selectedPost, positiveTag, negativeTag } });
+  const getHashtagUserId = await click_hashtag.findAll({
+    where: { user_id: userid },
+  });
+
+  return res.status(200).send({
+    data: { selectedPost, positiveTag, negativeTag, getHashtagUserId },
+  });
 };

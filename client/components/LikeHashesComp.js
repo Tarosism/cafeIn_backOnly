@@ -1,9 +1,14 @@
 import axios from "axios";
-import React from "react";
+import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { postListHashAction } from "../reducer/post";
 
-export default function LikeHashesComp({ positive, postId, clickHandle }) {
+export default function LikeHashesComp({
+  positive,
+  postId,
+  clickHandle,
+  userClickedHeart,
+}) {
   const addLike = () => {
     axios
       .post(
@@ -19,7 +24,7 @@ export default function LikeHashesComp({ positive, postId, clickHandle }) {
           withCredentials: true,
         }
       )
-      .then(() => {
+      .then((res) => {
         clickHandle();
       });
   };
@@ -27,7 +32,11 @@ export default function LikeHashesComp({ positive, postId, clickHandle }) {
   return (
     <div style={{ cursor: "pointer" }} onClick={addLike}>
       {positive.category}
-      {positive.name} {positive.counts}
+      {positive.name} {positive.counts}{" "}
+      {userClickedHeart &&
+      userClickedHeart.findIndex((res) => res === positive.id) === -1
+        ? "♡"
+        : "♥"}
     </div>
   );
 }

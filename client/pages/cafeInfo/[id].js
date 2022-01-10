@@ -12,6 +12,7 @@ export default function cafeInfo() {
   const [cafeInfo, setCafeInfo] = useState(null);
   const [positive, setPositive] = useState(null);
   const [negative, setNegative] = useState(null);
+  const [userPick, setUserPick] = useState(null);
   const [langLung, setLangLung] = useState([]);
   const [clicked, setClicked] = useState(false);
   const [tagName, setTagName] = useState("");
@@ -21,13 +22,14 @@ export default function cafeInfo() {
     !id
       ? ""
       : axios
-          .get(`https://localhost:8080/posts/cafe-info/${id}`, {
+          .get(`https://localhost:8080/posts/cafe-info/1/${id}`, {
             withCredentials: true,
           })
           .then((res) => {
             setCafeInfo(res.data.data.selectedPost);
             setPositive(res.data.data.positiveTag);
             setNegative(res.data.data.negativeTag);
+            setUserPick(res.data.data.getHashtagUserId);
             setLangLung([
               Number(res.data.data.selectedPost.lat),
               Number(res.data.data.selectedPost.long),
@@ -76,6 +78,9 @@ export default function cafeInfo() {
   const categoryHandle = (e) => {
     setCategory(e.target.value);
   };
+
+  const userClickedHeart = userPick && userPick.map((fill) => fill.like_id);
+
   return (
     <>
       {!cafeInfo ? (
@@ -102,6 +107,7 @@ export default function cafeInfo() {
                       positive={fill}
                       postId={id}
                       clickHandle={clickHandle}
+                      userClickedHeart={userClickedHeart}
                     />
                   );
                 })}

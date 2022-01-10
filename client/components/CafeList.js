@@ -33,6 +33,7 @@ export default function CafeList({ location }) {
           if (res.data.data.length === 0) setNoPlace(true);
           dispatch(postCountHashAction(res.data.count));
           setList(res.data.data);
+          console.log(res.data.a);
         });
   }, [location, click]);
 

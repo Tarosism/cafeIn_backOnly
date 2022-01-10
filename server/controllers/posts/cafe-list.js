@@ -75,8 +75,12 @@ module.exports = async (req, res) => {
     });
   });
 
-  const positiveTag = findPosHash.map((fill) =>
+  const sortPositiveTag = findPosHash.map((fill) =>
     fill.sort((a, b) => b.counts - a.counts)
+  );
+
+  const positiveTag = sortPositiveTag.map((fill) =>
+    fill.length >= 3 ? fill.slice(0, 3) : fill
   );
 
   res.status(200).send({ data: listUp, count: positiveTag });

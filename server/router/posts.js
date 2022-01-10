@@ -17,7 +17,7 @@ router.get(
   controllers.cafe_list_click_hash
 );
 
-router.get("/cafe-info/:postid", controllers.cafe_info);
+router.get("/cafe-info/:userid/:postid", controllers.cafe_info);
 
 router.post("/add-hashtag/:postid", controllers.add_hashtag);
 

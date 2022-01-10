@@ -1,13 +1,17 @@
 import axios from "axios";
 import React from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { postListHashAction } from "../reducer/post";
 
-export default function LikeHashesComp({ cafeInfo, postId, clickHandle }) {
+export default function LikeHashesComp({ positive, postId, clickHandle }) {
   const addLike = () => {
     axios
       .post(
-        `https://localhost:8080/posts//cafe-info/${postId}/click/like-hashtag/${cafeInfo.id}`,
+        `https://localhost:8080/posts/hashtag-click`,
         {
           userId: 1,
+          postId,
+          hashId: positive.id,
           //user state에서 id를 가져와주면 됨. 지금은 user관련을 다 날려서 1로 고정함
         },
         {
@@ -15,15 +19,14 @@ export default function LikeHashesComp({ cafeInfo, postId, clickHandle }) {
           withCredentials: true,
         }
       )
-      .then((res) => {
-        console.log(res.data.message);
+      .then(() => {
         clickHandle();
       });
   };
 
   return (
     <div style={{ cursor: "pointer" }} onClick={addLike}>
-      {cafeInfo.name} {cafeInfo.counts}
+      {positive.name} {positive.counts}
     </div>
   );
 }

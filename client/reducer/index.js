@@ -1,6 +1,7 @@
 import { HYDRATE } from "next-redux-wrapper"; //서버사이드랜더링을 위한 하이드레이트
 import { combineReducers } from "redux";
 import userReducer from "./user";
+import postReducer from "./post";
 
 // 컴바인 리듀서를 index 리듀서에 써준다. 이 부분은 스타일인 듯.
 // 리듀서 자체를 다 나눠서 store에서 컴바인을 해줄 수도 있는 거고
@@ -19,6 +20,7 @@ const rootReducer = combineReducers({
     }
   },
   userReducer,
+  postReducer,
 });
 
 export default rootReducer;

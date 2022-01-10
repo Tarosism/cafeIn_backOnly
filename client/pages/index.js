@@ -1,43 +1,55 @@
 import React, { useState, useCallback, useRef, useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import LoginNav from "../components/LoginNav";
 import Nav from "../components/Nav";
-import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
-import proj4 from "proj4";
 import CafeList from "../components/CafeList";
+import axios from "axios";
+import dynamic from "next/dynamic";
+import { userLocationAction } from "../reducer/user";
 
 export default function index() {
   const state = useSelector((state) => state.userReducer);
-  const { isLoggedIn } = state;
+  const { me, isLoggedIn } = state;
+  const dispatch = useDispatch();
 
-  const grs80 =
-    "+proj=tmerc +lat_0=38 +lon_0=127 +k=1 +x_0=200000 +y_0=500000 +ellps=bessel +units=m +no_defs +towgs84=-115.80,474.99,674.11,1.16,-2.31,-1.63,6.43";
-  const wgs84 = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs ";
+  const [location, setLocation] = useState(null);
 
-  //const toLat = proj4(grs80, wgs84, [953937.9, 1952051.9]);
-  const toLat = proj4(grs80, wgs84, [207088.508452371, 454739.360770068]); //x, y순으로 적기 => 127 , 36 순으로 나옴
+  const Nossr = dynamic(() => import("../components/Nav"), { ssr: false });
+  //next에선 navigator가 안 먹음. 그래서 ssr 예외처리 하는 라이브러리 사용
+  useEffect(() => {
+    // navigator.geolocation.getCurrentPosition((res) =>
+    //   dispatch(userLocationAction(res.coords.latitude, res.coords.longitude))
+    // );
+    //navigator는 이렇게 써주면 됨. 클라에서 손쉽게 사용자 위치 확인
+    //했다 치고!
+    console.log("네비요청감");
+  }, []);
+  useEffect(() => {
+    // me &&
+    //   axios
+    //     .get(
+    //       `https://maps.googleapis.com/maps/api/geocode/json?latlng=${me.lat},${me.long}&key=AIzaSyCQOOCGwW4h5R1FImc1IKrseUw_YklS6IU`,
+    //       { withCredentials: false }
+    //     )
+    //     .then((res) =>
+    //       setLocation(res.data.results[1].address_components[2].long_name)
+    //     );
+    setLocation("대치동");
+    console.log("좌표요청감");
+  }, []);
+  //요청을 아끼는 방법은?? 이쪽은 더 생각해봐야곘네
+  //여기까지 '구'를 뽑아오기.
+  /*
+res.data.results[1].address_components[2].long_name = 구
+위에선 내 위치 기반인데 서구가 나옴. 정확도가?
+ */
 
-  const center = {
-    lat: toLat[1],
-    lng: toLat[0],
-  };
-  const containerStyle = {
-    width: "500px",
-    height: "500px",
-  };
   return (
     <>
-      {isLoggedIn ? <LoginNav /> : <Nav />}
-       {/* <LoadScript googleMapsApiKey="AIzaSyCQOOCGwW4h5R1FImc1IKrseUw_YklS6IU">
-        <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={15}>
-          <Marker position={center} />
-        </GoogleMap>
-      </LoadScript> */}
-      <h1>
-        카페를 선택해봐
-        {/* {center.lat}, {center.lng} */}
-      </h1>
-      <CafeList />
+      {isLoggedIn ? <LoginNav /> : <Nossr />}
+      <h1>카페를 선택해봐</h1>
+      <CafeList location={location} />
+      <br />
     </>
   );
 }

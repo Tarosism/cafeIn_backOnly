@@ -28,7 +28,7 @@ export default function index() {
     // me &&
     //   axios
     //     .get(
-    //       `https://maps.googleapis.com/maps/api/geocode/json?latlng=${me.lat},${me.long}&key=AIzaSyCQOOCGwW4h5R1FImc1IKrseUw_YklS6IU`,
+    //       `https://maps.googleapis.com/maps/api/geocode/json?latlng=${me.lat},${me.long}&key=${process.env.REACT_APP_API_KEY}`,
     //       { withCredentials: false }
     //     )
     //     .then((res) =>

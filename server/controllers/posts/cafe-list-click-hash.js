@@ -1,13 +1,15 @@
 const { post, hash_tag, click_hashtag } = require("../../models");
+const { isAccessToken } = require("../modules/jwt");
 
 module.exports = async (req, res) => {
-  const { lat, long, location, lastid } = req.params;
+  const { lat, long, location, lastid, category } = req.params;
 
   const selectedPost = await post.findAll({
     where: { location },
     include: [
       {
         model: hash_tag,
+        where: { category, type: "positive" },
       },
     ],
   });
@@ -18,7 +20,7 @@ module.exports = async (req, res) => {
       message: "현재 서비스되고 있지 않은 지역입니다",
     });
   }
-  //좌표간 거리를 1000m 단위로 나타냄
+
   const deg2rad = (deg) => deg * (Math.PI / 180);
   const R = 6371;
   const result = selectedPost.map((fill) => {
@@ -39,7 +41,6 @@ module.exports = async (req, res) => {
     fill.distance = result[idx];
   });
 
-  //allPost를 만든 다음 거기에 distance를 넣는 것이기 때문에 order는 먹지 않는다
   const cafeList = selectedPost.sort((a, b) => a.distance - b.distance);
 
   const listUp = [];
@@ -58,7 +59,7 @@ module.exports = async (req, res) => {
 
   const count = listUp.map((fill) => fill.hash_tags);
 
-  const findPosHash = count.map((fill) => {
+  const a = count.map((fill) => {
     return fill.filter((fill) => {
       return fill.type === "positive";
       // for (let i = 0; i < countsHashTags.length; i++) {
@@ -67,7 +68,7 @@ module.exports = async (req, res) => {
     });
   });
 
-  findPosHash.map((fill) => {
+  a.map((fill) => {
     fill.map((fill) => {
       for (let i = 0; i < countsHashTags.length; i++) {
         if (fill.id === countsHashTags[i]) fill.counts++;
@@ -75,9 +76,7 @@ module.exports = async (req, res) => {
     });
   });
 
-  const positiveTag = findPosHash.map((fill) =>
-    fill.sort((a, b) => b.counts - a.counts)
-  );
+  const positiveTag = a.map((fill) => fill.sort((a, b) => b.counts - a.counts));
 
   res.status(200).send({ data: listUp, count: positiveTag });
 };

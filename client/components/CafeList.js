@@ -2,29 +2,37 @@ import axios from "axios";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { postCountAction } from "../reducer/post";
+import {
+  postCountAction,
+  postCountRestAction,
+  postCategoryAction,
+  postCountHashAction,
+} from "../reducer/post";
 
 export default function CafeList({ location }) {
   const [list, setList] = useState(null);
   const [noPlace, setNoPlace] = useState(false);
-  const [click, setClick] = useState(false); //리덕스로 바꾸기
+  const [click, setClick] = useState(false);
 
   const state = useSelector((state) => state.postReducer);
-  const { listCount } = state;
+  const { listCount, category, countHash } = state;
   const dispatch = useDispatch();
+
   useEffect(() => {
     location &&
       axios
         .get(
-          `https://localhost:8080/posts/cafe-list/${location}/lat/37.5662/long/127.0092/${listCount}`,
+          `https://localhost:8080/posts/cafe-list/${location}/lat/37.5662/long/127.0092/${listCount}/${
+            category && category
+          }`,
           {
             withCredentials: true,
           }
         )
         .then((res) => {
           if (res.data.data.length === 0) setNoPlace(true);
+          dispatch(postCountHashAction(res.data.count));
           setList(res.data.data);
-          console.log(res.data.data);
         });
   }, [location, click]);
 
@@ -34,28 +42,36 @@ export default function CafeList({ location }) {
     return result + type;
   };
 
-  const aa = () => {
-    setClick((prev) => !prev);
-  };
-
   const callList = () => {
     dispatch(postCountAction());
+
     setClick((prev) => !prev);
   };
 
-  const testHash = (data) => {
-    console.log(data);
+  const hashSearch = (category) => {
+    dispatch(postCategoryAction(category));
+    axios
+      .get(
+        `https://localhost:8080/posts/cafe-list/${location}/lat/37.5662/long/127.0092/${listCount}/${category}`,
+        {
+          withCredentials: true,
+        }
+      )
+      .then((res) => {
+        setList(res.data.data);
+        dispatch(postCountHashAction(res.data.count));
+      });
   };
 
   return (
     <>
-      <button onClick={aa}>asdasd</button>
       {!list ? (
         <div>로딩즁</div>
       ) : noPlace ? (
         <div>{list.message}</div>
       ) : (
-        list.map((fill) => {
+        list.map((fill, idx) => {
+          console.log(idx);
           return (
             <>
               <Link href={`/cafeInfo/${fill.id}`}>
@@ -66,15 +82,22 @@ export default function CafeList({ location }) {
                 </div>
               </Link>
               <div>
-                {fill.hash_tags
-                  .filter((fill) => {
-                    return fill.type === "positive";
-                  })
-                  .map((fill) => (
-                    <span onClick={() => testHash(fill.category)}>
-                      #{fill.category + fill.name}{" "}
-                    </span>
-                  ))}
+                {countHash &&
+                  countHash[idx].map((fill) =>
+                    fill.length === 0 ? (
+                      ""
+                    ) : (
+                      <>
+                        <span
+                          onClick={() => hashSearch(fill.category)}
+                          style={{ color: "blue", cursor: "pointer" }}
+                        >
+                          #{fill.category}
+                        </span>
+                        <span>{fill.name}</span>
+                      </>
+                    )
+                  )}
               </div>
             </>
           );

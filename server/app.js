@@ -26,7 +26,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(
   cors({
-    origin: ["https://localhost:3000"],
+    origin: ["https://localhost:3000", "http://localhost:3000"],
     credentials: true,
     methods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
   })
@@ -34,6 +34,7 @@ app.use(
 app.use(cookieParser());
 app.use("/", Router);
 
+//요 아래 주석만 푸시면 됩니다요
 // const data = [...yeoksam.documents, ...daechi.documents];
 // const result = data.map((fill) => {
 //   return {

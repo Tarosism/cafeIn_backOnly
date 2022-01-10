@@ -14,6 +14,9 @@ export default function cafeInfo() {
   const [negative, setNegative] = useState(null);
   const [langLung, setLangLung] = useState([]);
   const [clicked, setClicked] = useState(false);
+  const [tagName, setTagName] = useState("");
+  const [category, setCategory] = useState("의자");
+
   useEffect(() => {
     !id
       ? ""
@@ -25,7 +28,6 @@ export default function cafeInfo() {
             setCafeInfo(res.data.data.selectedPost);
             setPositive(res.data.data.positiveTag);
             setNegative(res.data.data.negativeTag);
-            console.log(res.data.data);
             setLangLung([
               Number(res.data.data.selectedPost.lat),
               Number(res.data.data.selectedPost.long),
@@ -47,6 +49,33 @@ export default function cafeInfo() {
     width: "500px",
     height: "500px",
   };
+
+  const addHashTag = (tagName, category) => {
+    axios
+      .post(
+        `https://localhost:8080/posts/add-hashtag/${id}`,
+        {
+          hashtag: tagName,
+          category: category,
+          type: "positive",
+        },
+        {
+          withCredentials: true,
+          "Content-Type": "applicaton/json",
+        }
+      )
+      .then((res) =>
+        console.log(res.data.message ? res.data.message : "해시태그 등록 완료")
+      );
+  };
+
+  const tagNameHandle = (e) => {
+    setTagName(e.target.value);
+  };
+
+  const categoryHandle = (e) => {
+    setCategory(e.target.value);
+  };
   return (
     <>
       {!cafeInfo ? (
@@ -55,7 +84,10 @@ export default function cafeInfo() {
         <>
           <h1>{cafeInfo.title}</h1>
           <div>
-            <span>{positive && positive.map((fill) => fill.name)} </span>
+            <span>
+              {positive &&
+                positive.map((fill) => fill.category + fill.name + " ")}{" "}
+            </span>
           </div>
           <p>주소: {cafeInfo.adress}</p>
           <p>전화번호 : {cafeInfo.tel}</p>
@@ -88,22 +120,41 @@ export default function cafeInfo() {
                 })}
             </div>
           </div>
+          <div>
+            <h3>좋아요 해시태그 입력</h3>
+            <select onChange={(e) => categoryHandle(e)} value={category}>
+              <option value={"의자"}>의자</option>
+              <option value={"테이블"}>테이블</option>
+              <option value={"가격"}>가격</option>
+              <option value={"직원"}>직원</option>
+            </select>
+            <input
+              type="text"
+              value={tagName}
+              onChange={(e) => tagNameHandle(e)}
+            ></input>{" "}
+            <button onClick={() => addHashTag(tagName, category)}>입력</button>
+          </div>
+          <div>
+            <h3>싫어요 해시태그 입력</h3>
+          </div>
 
           <h2>지도오</h2>
           <div>
             {langLung[0] === 0 ? (
               <div>철거됨</div>
             ) : (
-              <></>
-              // <LoadScript googleMapsApiKey="AIzaSyCQOOCGwW4h5R1FImc1IKrseUw_YklS6IU">
-              //   <GoogleMap
-              //     mapContainerStyle={containerStyle}
-              //     center={center}
-              //     zoom={18}
-              //   >
-              //     <Marker position={center} />
-              //   </GoogleMap>
-              // </LoadScript>
+              <>
+                {/* <LoadScript googleMapsApiKey="AIzaSyCQOOCGwW4h5R1FImc1IKrseUw_YklS6IU">
+                  <GoogleMap
+                    mapContainerStyle={containerStyle}
+                    center={center}
+                    zoom={18}
+                  >
+                    <Marker position={center} />
+                  </GoogleMap>
+                </LoadScript> */}
+              </>
             )}
           </div>
           <h2>{id}번 포스트입니다요</h2>

@@ -31,12 +31,12 @@ module.exports = async (req, res) => {
     }
   });
 
-  const positiveTag = selectedPost.hash_tags.filter(
-    (fill) => fill.type === "positive"
-  );
-  const negativeTag = selectedPost.hash_tags.filter(
-    (fill) => fill.type === "negative"
-  );
+  const positiveTag = selectedPost.hash_tags
+    .filter((fill) => fill.type === "positive")
+    .sort((a, b) => b.counts - a.counts);
+  const negativeTag = selectedPost.hash_tags
+    .filter((fill) => fill.type === "negative")
+    .sort((a, b) => b.counts - a.counts);
 
   return res
     .status(200)

@@ -26,6 +26,7 @@ export default function LikeHashesComp({ positive, postId, clickHandle }) {
 
   return (
     <div style={{ cursor: "pointer" }} onClick={addLike}>
+      {positive.category}
       {positive.name} {positive.counts}
     </div>
   );

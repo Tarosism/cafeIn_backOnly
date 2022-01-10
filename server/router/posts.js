@@ -7,7 +7,15 @@ router.get(
   controllers.cafe_list
 );
 
-router.get("/cafe-list/:id", controllers.cafe_list_likehash);
+// router.get(
+//   "/cafe-list/:location/:lat/:long/:lastid",
+//   controllers.cafe_list_sort_hash
+// );
+
+router.get(
+  "/cafe-list/:location/lat/:lat/long/:long/:lastid/:category",
+  controllers.cafe_list_click_hash
+);
 
 router.get("/cafe-info/:postid", controllers.cafe_info);
 

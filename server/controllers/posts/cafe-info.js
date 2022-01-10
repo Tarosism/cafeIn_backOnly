@@ -1,41 +1,44 @@
-const { post, click_like, click_dislike } = require("../../models");
+const { post, click_hashtag, hash_tag } = require("../../models");
 const { isAccessToken } = require("../modules/jwt");
 
 module.exports = async (req, res) => {
-  const cafeInfo = await post.findOne({
-    where: { id: req.params.id },
+  const { postid } = req.params;
+
+  const selectedPost = await post.findOne({
+    where: { id: postid },
+    include: [
+      {
+        model: hash_tag,
+      },
+    ],
   });
 
-  const likeHashes = await cafeInfo.getLikes_hash_tags();
-  const dislikeHashes = await cafeInfo.getDislikes_hash_tags();
-
-  const getLikehashId = await click_like.findAll({
-    where: { post_id: req.params.id },
+  const getHashtagId = await click_hashtag.findAll({
+    where: { post_id: postid },
   });
-  const click_like_model = getLikehashId.map((fill) => fill.like_id);
 
-  likeHashes.map((fill) => {
-    for (let i = 0; i < click_like_model.length; i++) {
-      if (fill.id === click_like_model[i]) {
-        fill.counts++;
-      }
+  //selectedPost.hash_tags 의 fill 안에는 type이 있는 해시 id들
+  //getHashtagId의 fill 안에는 like_id only
+  //getHashtagId의 id갯수를 세서 표시하면..?
+  // 하 씨발 이거 어떻게 푸냐 개같네
+  const countsHashTags = getHashtagId.map((fill) => {
+    return fill.like_id;
+  });
+
+  selectedPost.hash_tags.map((fill) => {
+    for (let i = 0; i < countsHashTags.length; i++) {
+      if (fill.id === countsHashTags[i]) fill.counts++;
     }
   });
 
-  const getDislikehashId = await click_dislike.findAll({
-    where: { post_id: req.params.id },
-  });
-  const click_dislike_model = getDislikehashId.map((fill) => fill.like_id);
-
-  dislikeHashes.map((fill) => {
-    for (let i = 0; i < click_dislike_model.length; i++) {
-      if (fill.id === click_dislike_model[i]) {
-        fill.counts++;
-      }
-    }
-  });
+  const positiveTag = selectedPost.hash_tags.filter(
+    (fill) => fill.type === "positive"
+  );
+  const negativeTag = selectedPost.hash_tags.filter(
+    (fill) => fill.type === "negative"
+  );
 
   return res
     .status(200)
-    .send({ data: { cafeInfo, likeHashes, dislikeHashes } });
+    .send({ data: { selectedPost, positiveTag, negativeTag } });
 };

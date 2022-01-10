@@ -13,9 +13,17 @@ module.exports = class post extends Sequelize.Model {
           type: Sequelize.STRING(255),
           allowNull: false,
         },
-        content: {
+        tel: {
+          type: Sequelize.STRING(15),
+          allowNull: false,
+        },
+        adress: {
           type: Sequelize.STRING(255),
           allowNull: false,
+        },
+        distance: {
+          type: Sequelize.INTEGER,
+          allowNull: true,
         },
         title: {
           type: Sequelize.STRING(100),
@@ -52,13 +60,8 @@ module.exports = class post extends Sequelize.Model {
     /* 하나의 해시태그는 여러 개의 게시글을 가질 수 있다
     
     */
-    db.post.belongsToMany(db.likes_hash_tag, {
-      through: "posts_likes_hash_tags",
-      foreignKey: "post_id",
-      sourceKey: "id",
-    });
-    db.post.belongsToMany(db.dislikes_hash_tag, {
-      through: "posts_dislikes_hash_tags",
+    db.post.belongsToMany(db.hash_tag, {
+      through: "posts_hash_tags",
       foreignKey: "post_id",
       sourceKey: "id",
     });

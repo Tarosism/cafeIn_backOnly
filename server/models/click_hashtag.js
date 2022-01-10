@@ -1,6 +1,6 @@
 const Sequelize = require("sequelize");
 
-module.exports = class click_dislike extends Sequelize.Model {
+module.exports = class click_hashtag extends Sequelize.Model {
   static init(sequelize) {
     return super.init(
       {
@@ -20,8 +20,8 @@ module.exports = class click_dislike extends Sequelize.Model {
       {
         sequelize,
         timestamps: false,
-        modelName: "click_dislike",
-        tableName: "click_dislikes",
+        modelName: "click_hashtag",
+        tableName: "click_hashtags",
         paranoid: false,
         charset: "utf8mb4",
         collate: "utf8mb4_general_ci",
